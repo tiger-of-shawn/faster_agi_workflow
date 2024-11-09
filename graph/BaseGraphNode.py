@@ -5,18 +5,19 @@ import time
 
 
 class BaseGraphNode:
-    def __init__(self, name : str = ''):
+    def __init__(self, name : str = '', **kwargs):
         self.name = name
+        self.kwargs = kwargs
         self.output_callbacks = []
         self.input_data = []
         self.input_keys = []
         self.output_keys = []
         self.data_lock = threading.Lock()
         self.data_semaphore = threading.Semaphore(0)  # Initial value of 0
-        self.thread = threading.Thread(target=self._process_data)
+        self.thread = threading.Thread(target=self.process_data)
         self.running = False
 
-    def _process_data(self):
+    def process_data(self):
         while self.running:
             self.data_semaphore.acquire()  # Decrement the semaphore, wait for new data
             with self.data_lock:
@@ -38,10 +39,21 @@ class BaseGraphNode:
     def get_output_keys(self) -> list:
         return self.output_keys
     
-    def set_input(self, key: str, value: any) -> bool:
+    def set_input(self, **kwargs) -> bool:
         with self.data_lock:
-            self.input_data.append({key: value})
-            self.data_semaphore.release()  # Increment the semaphore, signaling new data
+            data_to_add = {}
+            for key, value in kwargs.items():
+                if key in self.input_keys:
+                    data_to_add[key] = value
+            if set(data_to_add.keys()) == set(self.input_keys):
+                self.input_data.append(data_to_add)
+                self.data_semaphore.release()  # Increment the semaphore, signaling new data
+                return True
+            else:
+                print(f'got: {set(data_to_add.keys())}')
+                print(f'expected: {set(self.input_keys)}')
+                print(f"Missing inputs: {self.input_keys - data_to_add.keys()}")
+                return False 
 
     def register_output_callback(self, callback) -> bool:
         if callable(callback) and callback not in self.output_callbacks:

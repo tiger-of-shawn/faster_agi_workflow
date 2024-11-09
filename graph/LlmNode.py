@@ -52,8 +52,8 @@ if __name__ == '__main__':
 
     llmNode.register_output_callback(llm_response)
     llmNode.run()
+    data_to_infer = {'user_prompt': 'What is the capital of China?'}
 
-    llmNode.set_input('user_prompt', 'What is the capital of France?')
-    llmNode.set_input('user_prompt', 'What is the capital of China?')
+    llmNode.set_input(**data_to_infer)
     
 
