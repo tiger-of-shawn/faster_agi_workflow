@@ -1,0 +1,26 @@
+nodes:
+  - name: start
+    label: start
+    color: red
+    shape: box
+    type: InputNode
+  - name: Tom
+    label: Tom
+    color: blue
+    shape: ellipse
+    type: LlmNode
+  - name: Rose
+    label: Rose
+    color: green
+    shape: ellipse
+    type: LlmNode
+  - name: Flow
+    label: Flow
+    color: green
+    shape: ellipse
+    type: LlmNode    
+edges:
+  - [start, Tom]
+  - [Tom, Rose]
+  - [Rose, Flow]
+  - [Flow, Tom]  

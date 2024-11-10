@@ -1,6 +1,7 @@
-from BaseGraphNode import BaseGraphNode
+from nodes.BaseGraphNode import BaseGraphNode
 import os
 from openai import OpenAI
+import base64
 
 class VlmNode(BaseGraphNode):
     def __init__(self, name : str = '', **kwargs):
@@ -55,7 +56,6 @@ class VlmNode(BaseGraphNode):
 def llm_response(key: str, value: any) -> None:
     print(f'key = {key}, value = {value}')
 
-import base64
 def encode_image(image_path):
     with open(image_path, "rb") as image_file:
         print(f'calc base64')

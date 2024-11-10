@@ -1,4 +1,4 @@
-from BaseGraphNode import BaseGraphNode
+from nodes.BaseGraphNode import BaseGraphNode
 import os
 from openai import OpenAI
 
@@ -26,7 +26,7 @@ class LlmNode(BaseGraphNode):
             with self.data_lock:
                 if self.input_data:
                     data = self.input_data.pop(0)
-                    print(f"Processing: {data}")
+                    print(f"{self.name}> Processing: {data}")
                     if 'user_prompt' not in data:
                         continue
                     completion = self.client.chat.completions.create(
@@ -34,6 +34,7 @@ class LlmNode(BaseGraphNode):
                         messages=[{"role": "user", "content": data['user_prompt']}]
                     )
                     llm_response = completion.choices[0].message.content
+                    print(f'{self.name}> llm_response:  {llm_response}')
                     for callback in self.output_callbacks:
                         callback(key = 'llm_response', value = llm_response)
                 else:
