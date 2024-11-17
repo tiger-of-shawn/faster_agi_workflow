@@ -18,12 +18,17 @@ class GraphRenderer:
                 name = node['name']
                 label = node.get('label', name)
                 color = node.get('color', 'black')
-                shape = node.get('shape', 'circle')  # 默认形状为圆形
+                shape = node.get('shape', 'circle')
                 self.graph.node(name, label=label, color=color, shape=shape)
 
             # 添加边
             for edge in edges:
-                self.graph.edge(edge[0], edge[1])
+                if len(edge) == 3:
+                    source, target, label = edge
+                    self.graph.edge(source, target, label=label)
+                else:
+                    source, target = edge
+                    self.graph.edge(source, target)
 
     def render_graph(self, output_file='graph.jpg'):
         if self.graph is None:
@@ -34,6 +39,6 @@ class GraphRenderer:
 
 # 使用示例
 if __name__ == "__main__":
-    renderer = GraphRenderer('3_argu.yaml')
+    renderer = GraphRenderer('graph.yaml')
     renderer.load_graph()
     renderer.render_graph()
